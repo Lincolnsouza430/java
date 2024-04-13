@@ -1,0 +1,149 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Task {
+    private String name;
+    private String description;
+    private boolean completed;
+
+    public Task(String name, String description) {
+        this.name = name;
+        this.description = description;
+        this.completed = false;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void markAsCompleted() {
+        this.completed = true;
+    }
+
+    @Override
+    public String toString() {
+        return "[" + (completed ? "x" : " ") + "] " + name + " - " + description;
+    }
+}
+
+public class TodoListManager {
+    private ArrayList<Task> tasks;
+    private Scanner scanner;
+
+    public TodoListManager() {
+        tasks = new ArrayList<>();
+        scanner = new Scanner(System.in);
+    }
+
+    public void start() {
+        int choice;
+        do {
+            System.out.println("==== Gerenciador de Tarefas ====");
+            System.out.println("1. Adicionar Tarefa");
+            System.out.println("2. Visualizar Tarefas");
+            System.out.println("3. Marcar Tarefa como Concluída");
+            System.out.println("4. Atualizar Tarefa");
+            System.out.println("5. Excluir Tarefa");
+            System.out.println("6. Sair");
+            System.out.print("Escolha uma opção: ");
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consumir a quebra de linha
+
+            switch (choice) {
+                case 1:
+                    addTask();
+                    break;
+                case 2:
+                    viewTasks();
+                    break;
+                case 3:
+                    markTaskAsCompleted();
+                    break;
+                case 4:
+                    updateTask();
+                    break;
+                case 5:
+                    deleteTask();
+                    break;
+                case 6:
+                    System.out.println("Até logo!");
+                    break;
+                default:
+                    System.out.println("Opção inválida. Tente novamente.");
+            }
+        } while (choice != 6);
+    }
+
+    private void addTask() {
+        System.out.print("Nome da tarefa: ");
+        String name = scanner.nextLine();
+        System.out.print("Descrição da tarefa: ");
+        String description = scanner.nextLine();
+        Task task = new Task(name, description);
+        tasks.add(task);
+        System.out.println("Tarefa adicionada com sucesso!");
+    }
+
+    private void viewTasks() {
+        System.out.println("==== Lista de Tarefas ====");
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println((i + 1) + ". " + tasks.get(i));
+        }
+    }
+
+    private void markTaskAsCompleted() {
+        viewTasks();
+        System.out.print("ID da tarefa a ser marcada como concluída: ");
+        int taskId = scanner.nextInt();
+        if (taskId > 0 && taskId <= tasks.size()) {
+            tasks.get(taskId - 1).markAsCompleted();
+            System.out.println("Tarefa marcada como concluída!");
+        } else {
+            System.out.println("ID de tarefa inválido!");
+        }
+    }
+
+    private void updateTask() {
+        viewTasks();
+        System.out.print("ID da tarefa a ser atualizada: ");
+        int taskId = scanner.nextInt();
+        scanner.nextLine(); // Consumir a quebra de linha
+        if (taskId > 0 && taskId <= tasks.size()) {
+            System.out.print("Novo nome da tarefa: ");
+            String newName = scanner.nextLine();
+            System.out.print("Nova descrição da tarefa: ");
+            String newDescription = scanner.nextLine();
+            Task task = tasks.get(taskId - 1);
+            task = new Task(newName, newDescription);
+            tasks.set(taskId - 1, task);
+            System.out.println("Tarefa atualizada com sucesso!");
+        } else {
+            System.out.println("ID de tarefa inválido!");
+        }
+    }
+
+    private void deleteTask() {
+        viewTasks();
+        System.out.print("ID da tarefa a ser excluída: ");
+        int taskId = scanner.nextInt();
+        if (taskId > 0 && taskId <= tasks.size()) {
+            tasks.remove(taskId - 1);
+            System.out.println("Tarefa excluída com sucesso!");
+        } else {
+            System.out.println("ID de tarefa inválido!");
+        }
+    }
+
+    public static void main(String[] args) {
+        TodoListManager manager = new TodoListManager();
+        manager.start();
+    }
+}
